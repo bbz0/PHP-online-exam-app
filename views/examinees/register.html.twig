@@ -1,0 +1,62 @@
+{% extends 'inc/base.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+	<section class="py-5">
+		<div class="container">
+			<div class="row">
+
+				{% block msgs %}
+					{{ parent() }}
+				{% endblock %}
+
+				<div class="col-md-6 mx-auto">
+					<h1 class="mb-5">{{ title }}</h1>
+					<form action="{{ constant('URLROOT') }}/examinees/register" method="post" onsubmit="return register.register()">
+						<div class="card">
+							<div class="card-body">
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="firstName">First Name: <sup>*</sup></label>
+											<input class="form-control input--firstName {% if examinee.error.firstName %}is-invalid{% endif %}" type="text" name="firstName" id="firstName" value="{{ examinee.firstName }}" maxlength="50">
+											<span class="invalid-feedback">{{ examinee.error.firstName }}</span>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="firstName">Last Name: <sup>*</sup></label>
+											<input class="form-control input--lastName {% if examinee.error.lastName %}is-invalid{% endif %}" type="text" name="lastName" id="lastName" value="{{ examinee.lastName }}" maxlength="50">
+											<span class="invalid-feedback">{{ examinee.error.lastName }}</span>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="username">Username: <sup>*</sup></label>
+									<input class="form-control input--username {% if examinee.error.username %}is-invalid{% endif %}" type="text" name="username" id="username" value="{{ examinee.username }}" maxlength="50">
+									<span class="invalid-feedback">{{ examinee.error.username }}</span>
+								</div>
+								<div class="form-group">
+									<label for="password">Password: <sup>*</sup></label>
+									<input class="form-control input--password {% if examinee.error.password %}is-invalid{% endif %}" type="password" name="password" id="password" value="{{ examinee.password }}" maxlength="50">
+									<span class="invalid-feedback">{{ examinee.error.password }}</span>
+								</div>
+								<div class="form-group">
+									<label for="confirmPassword">Confirm Password: <sup>*</sup></label>
+									<input class="form-control input--confirm {% if examinee.error.confirmPassword %}is-invalid{% endif %}" type="password" name="confirmPassword" id="confirmPassword" value="{{ examinee.confirmPassword }}" maxlength="50">
+									<span class="invalid-feedback">{{ examinee.error.confirmPassword }}</span>
+								</div>
+								<input type="submit" class="btn btn-success btn-lg register--btn" name="submit" value="Register">	
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</section>
+{% endblock %}
+
+{% block javascript %}
+	<script type="text/javascript" src="{{ constant('URLROOT') }}/js/register.js"></script>
+{% endblock %}

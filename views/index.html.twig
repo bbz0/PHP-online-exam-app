@@ -1,7 +1,45 @@
 {% extends 'inc/base.html.twig' %}
 
-{% block title %}- Home{% endblock %}
+{% block title %}Home{% endblock %}
 
 {% block content %}
-	<h1>{{ test }}</h1>
+	<section>
+		<div class="jumbotron">
+			<div class="container">
+				<h1 class="display-4">Simple Online Exams</h1>
+				<p class="lead">No need to waste pen, paper, and time.</p>
+				<a href="{{ constant('URLROOT') }}/examiners/register" class="btn btn-success btn-lg">Register as Examiner</a>
+				<a href="{{ constant('URLROOT') }}/examinees/register" class="btn btn-info btn-lg">Register as Examinee</a>
+			</div>
+		</div>
+	</section>
+	<section class="py-5">
+		<div class="container">
+			<h2>Features</h2>
+			<hr class="bg-secondary">
+			<article class="mb-5">
+				<h3>Exams</h3>
+				<p>Exams are of multiple-type, which can have up to 5 choices. They consist of:</p>
+				<ul>
+					<li>Time limit</li>
+					<li>Passing Rates</li>
+					<li>Different Sections which consits of numbers of questions</li>
+					<li>Different access types: open, approved, and invite only</li>
+				</ul>
+			</article>
+			<article class="mb-5">
+				<h3>Examiners</h3>
+				<p>Examiners are teachers, proctors, or just anyone who wants to create and give exams.</p>
+				<ul>
+					<li>Can create, edit, and delete exams</li>
+					<li>Can set the time limit, passing rate, and number of questions</li>
+					<li>Can choose who can take the exams they created.</li>
+				</ul>
+			</article>
+			<article>
+				<h3>Examinees</h3>
+				<p>Examinees can be students, or just anyone who wants to take exams.</p>
+			</article>
+		</div>
+	</section>
 {% endblock %}

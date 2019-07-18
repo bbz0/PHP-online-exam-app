@@ -1,0 +1,33 @@
+{% extends 'inc/base.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+	<section class="py-5">
+		<div class="container">
+
+			{% block msgs %}
+				{{ parent() }}
+			{% endblock %}
+
+			<h2>Exams</h2>
+
+			{% for exam in exams %}
+			<div class="card mb-4">
+				<div class="card-body">
+					<h4 class="card-title"><a href="{{ constant('URLROOT') }}/exams/exam/{{ exam.ID }}">{{ exam.name }}</a></h4>
+					<small class="d-block my-2">
+						<span class="mr-4">made by {{ exam.examinerName }}</span>
+						<span class="mr-4">{{ exam.hours }}hr {{ exam.minutes }}m</span>
+						<span class="mr-4">{{ exam.questionsNum }} questions</span>
+						<span class="mr-4">{{ exam.passingRate }}% passing rate</span>
+						<span class="mr-4">{{ exam.accessType }}</span>
+					</small>				
+					<p class="card-text">{{ exam.descr }}</p>
+				</div>
+			</div>
+			{% endfor %}
+
+		</div>
+	</section>
+{% endblock %}

@@ -1,0 +1,125 @@
+{% extends 'inc/base.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+	<section class="py-5">
+		<div class="container">
+
+			{% block msgs %}
+				{{ parent() }}
+			{% endblock %}
+
+			<div class="row">
+				<div class="col-md-6 mx-auto">
+					<h1 class="mb-5">{{ title }}</h1>
+					<form action="{{ constant('URLROOT') }}/exams/create" method="post" onsubmit="return createExam.createExam()">
+						<div class="card mb-4">
+							<div class="card-header">
+								Exam Details
+							</div>
+							<div class="card-body">
+								<div class="form-group">
+									<label for="name">Exam Name: <sup>*</sup></label>
+									<input class="form-control input--name {% if examData.error.name %}is-invalid{% endif %}" type="text" name="name" id="name" value="{{ examData.name }}" maxlength="50">
+									<span class="invalid-feedback">{{ examData.error.name }}</span>
+								</div>
+								<div class="form-group">
+									<label for="desc">Description:</label>
+									<textarea class="form-control input--desc {% if examData.error.desc %}is-invalid{% endif %}" name="desc" id="desc" maxlength="255">{{ examData.desc }}</textarea>
+									<span class="invalid-feedback">{{ examData.error.desc }}</span>
+								</div>
+								<div class="form-group">
+									<label for="time">Time Limit: <sup>*</sup></label>
+									<div class="row">
+										<div class="col-md-6">
+											<label for="hours"><small>Hours</small></label>
+											<select class="form-control" name="hours" id="hours">
+												{% for i in range(00, 24) %}
+													<option value="{{ i }}">{% if i < 10 %}0{{ i }}{% else %}{{ i }}{% endif %}</option>
+												{% endfor %}
+											</select>
+										</div>
+										<div class="col-md-6">
+											<label for="mins"><small>Minutes</small></label>
+											<select class="form-control" name="mins" id="mins">
+												{% for i in range(01, 59) %}
+													<option value="{{ i }}">{% if i < 10 %}0{{ i }}{% else %}{{ i }}{% endif %}</option>
+												{% endfor %}
+											</select>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="accessType">Access Type: <sup>*</sup></label>
+									<div class="form-check">
+										<input class="form-check-input" type="radio" name="accessType" id="open" value="open" checked>
+										<label class="form-check-label" for="open">Open</label>
+									</div>
+									<div class="form-check">
+										<input class="form-check-input" type="radio" name="accessType" id="approved" value="approved">
+										<label class="form-check-label" for="approved">Approved</label>
+									</div>
+									<div class="form-check">
+										<input class="form-check-input" type="radio" name="accessType" id="inviteOnly" value="inviteOnly">
+										<label class="form-check-label" for="inviteOnly">Invite Only</label>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="passingRate">Passing Rate: <sup>*</sup></label>
+									<select class="form-control" name="passingRate" id="passingRate">
+									{% for i in range(low=50, high=100, step=5) %}
+										<option value="{{ i }}" {% if i == examData.passingRate %}selected{% endif %}>{{ i }} %</option>
+									{% endfor %}
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="card mb-4">
+							<div class="card-header">
+								Create Sections
+							</div>
+							<div class="card-body">
+								<div class="section--container">
+									{% if examData.section %}
+										{% for section in examData.section %}
+										<div class="form-group">
+											<div class="row">
+												<div class="col-md-8">
+													<input class="form-control input--section" type="text" name="section[]" placeholder="Section Name" value="{{ section }}" maxlength="50">
+													<span class="invalid-feedback"></span>
+												</div>
+												<div class="col-md-4">
+													<button type="button" class="btn btn-danger delete--section">Remove</button>
+												</div>
+											</div>
+										</div>
+										{% endfor %}
+									{% else %}
+									<div class="form-group">
+										<div class="row">
+											<div class="col-md-8">
+												<input class="form-control input--section" type="text" name="section[]" placeholder="Section Name" maxlength="50">
+												<span class="invalid-feedback"></span>
+											</div>
+											<div class="col-md-4">
+												<button type="button" class="btn btn-danger delete--section">Remove</button>
+											</div>
+										</div>
+									</div>
+									{% endif %}
+								</div>
+								<button type="button" class="btn btn-success add--section">Add Section</button>
+							</div>
+						</div>
+						<input type="submit" name="submit" class="btn btn-info btn-lg create--btn" value="Create Exam">
+					</form>
+				</div>
+			</div>
+		</div>
+	</section>
+{% endblock %}
+
+{% block javascript %}
+	<script type="text/javascript" src="{{ constant('URLROOT') }}/js/createExam.js"></script>
+{% endblock %}

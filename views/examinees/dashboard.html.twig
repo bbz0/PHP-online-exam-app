@@ -1,0 +1,84 @@
+{% extends 'inc/base.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+	<section class="py-5">
+		<div class="container">
+
+			{% block msgs %}
+				{{ parent() }}
+			{% endblock %}
+
+			<div class="card mb-4">
+				<div class="card-header">
+					Examinee
+				</div>
+				<div class="card-body text-center">
+					<h1>{{ examinee.firstName }} {{ examinee.lastName }}</h1>
+					<p class="lead">{{ examinee.username }}</p>
+				</div>
+			</div>
+			<div class="card mb-4">
+				<div class="card-header">
+					Stats
+				</div>
+				<div class="card-body text-center">
+					<div class="row">
+						<div class="col-md-3">
+							<h4>{{ examinee.examsTaken }}</h4>
+							<p>Exams Taken</p>
+						</div>
+						<div class="col-md-3">
+							<h4>{{ examinee.examsPassed }}</h4>
+							<p>Exams Passed</p>
+						</div>
+						<div class="col-md-3">
+							<h4>{{ examinee.examsFailed }}</h4>
+							<p>Exams Failed</p>
+						</div>
+						<div class="col-md-3">
+							<h4>{{ examinee.totalScore }}</h4>
+							<p>Total Score</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="card mb-4">
+				<div class="card-header">
+					Exam Records
+				</div>
+				<div class="card-body">
+					{% if records %}
+					<table class="table mt-4">
+						<thead>
+							<tr>
+								<th>Exam Name</th>
+								<th>Score</th>
+								<th># of Questions</th>
+								<th>Result</th>
+								<th>Started</th>
+								<th>Finished</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for record in records %}
+							<tr>
+								<td>{{ record.examName }}</td>
+								<td>{{ record.score }}</td>
+								<td>{{ record.items }}</td>
+								<td>{{ record.result }}</td>
+								<td>{{ record.started }}</td>
+								<td>{{ record.finished }}</td>
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+					{% else %}
+						<p>You have no records yet.</p>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</section>
+{% endblock %}

@@ -1,0 +1,46 @@
+<nav class="navbar navbar navbar-expand-lg navbar-dark bg-dark">
+	<div class="container">
+		<a class="navbar-brand" href="{{ constant('URLROOT') }}">{{ constant('SITENAME') }}</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarNav">
+			<ul class="navbar-nav ml-auto">
+				<li class="nav-item">
+					<a class="nav-link" href="{{ constant('URLROOT') }}">Home</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="{{ constant('URLROOT') }}/exams">Exams</a>
+				</li>
+				{% if examiner %}
+				<li class="nav-item">
+					<a class="nav-link" href="{{ constant('URLROOT') }}/examiners/logout">Logout</a>
+				</li>
+				{% elseif examinee %}
+				<li class="nav-item">
+					<a class="nav-link" href="{{ constant('URLROOT') }}/examinees/logout">Logout</a>
+				</li>
+				{% else %}
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="examinees" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						Examinees
+					</a>
+					<div class="dropdown-menu" aria-labelledby="examinees">
+						<a class="dropdown-item" href="{{ constant('URLROOT') }}/examinees/register">Register</a>
+						<a class="dropdown-item" href="{{ constant('URLROOT') }}/examinees/login">Login</a>
+					</div>
+				</li>
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="examiners" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						Examiners
+					</a>
+					<div class="dropdown-menu" aria-labelledby="examiners">
+						<a class="dropdown-item" href="{{ constant('URLROOT') }}/examiners/register">Register</a>
+						<a class="dropdown-item" href="{{ constant('URLROOT') }}/examiners/login">Login</a>
+					</div>
+				</li>
+				{% endif %}
+			</ul>
+		</div>
+	</div>
+</nav>

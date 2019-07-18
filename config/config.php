@@ -9,3 +9,4 @@
 	define('APPROOT', dirname(dirname(__FILE__)));
 	define('URLROOT', getenv('URLROOT'));
 	define('SITENAME', getenv('SITENAME'));
+	define('SERVER_ERR_MSG', getenv('SERVER_ERR_MSG'));

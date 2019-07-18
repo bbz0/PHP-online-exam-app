@@ -1,0 +1,64 @@
+{% extends 'inc/base.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+	<section class="py-5">
+		<div class="container">
+
+			{% block msgs %}
+				{{ parent() }}
+			{% endblock %}
+
+			<div class="card mb-4">
+				<div class="card-header">
+					Examiner
+				</div>
+				<div class="card-body text-center">
+					<h1>{{ examiner.firstName }} {{ examiner.lastName }}</h1>
+					<p class="lead">{{ examiner.username }}</p>
+				</div>
+			</div>
+			<div class="card mb-4">
+				<div class="card-header">
+					Exams Created
+				</div>
+				<div class="card-body">
+					<a href="{{ constant('URLROOT') }}/exams/create" class="btn btn-success btn-lg">Create an Exam</a>
+					{% if exams %}
+					<table class="table mt-4">
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>Name</th>
+								<th>Access Type</th>
+								<th>Time Limit</th>
+								<th>Passing Score</th>
+								<th>Passing Rate</th>
+								<th>Number of Questions</th>
+								<th>Edit</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for exam in exams %}
+							<tr>
+								<td>{{ exam.ID }}</td>
+								<td>{{ exam.name }}</td>
+								<td>{{ exam.accessType }}</td>
+								<td>{{ exam.hours }}h {{ exam.minutes }}m</td>
+								<td>{{ exam.passingScore }}</td>
+								<td>{{ exam.passingRate }} %</td>
+								<td>{{ exam.questionsNum }}</td>
+								<td><a href="{{ constant('URLROOT') }}/exams/edit/{{ exam.ID }}" class="btn btn-info">Edit</a></td>
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+					{% else %}
+						<p>You have no created exams at the moment.</p>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</section>
+{% endblock %}

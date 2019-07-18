@@ -1,0 +1,38 @@
+{% extends 'inc/base.html.twig' %}
+
+{% block title %}{{ title }} - Exam Results{% endblock %}
+
+{% block content %}
+	<section class="py-5">
+		<div class="container">
+
+			{% block msgs %}
+				{{ parent() }}
+			{% endblock %}
+
+			{% if record['result'] == 'Passed' %}
+			<div class="card text-white bg-success mb-4">
+				<img src="https://images.unsplash.com/photo-1491555103944-7c647fd857e6?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80" class="card-img-top">
+				<div class="card-body text-center">
+					<h1 class="card-title">Congratulations! You Passed!</h1>
+					<p class="card-text"><strong>{{ record['score'] }} out of {{ record['items'] }}</strong> correct answers</p>
+					<p class="card-text">Started at <strong>{{ record['started'] }}</strong></p>
+					<p class="card-text">Finished at <strong>{{ record['finished'] }}</strong></p>
+					<a href="{{ constant('URLROOT') }}" class="btn btn-info">Back to Home</a>
+				</div>
+			</div>
+			{% elseif record['result'] == 'Failed' %}
+			<div class="card text-white bg-danger">
+				<img src="https://images.unsplash.com/photo-1465321897912-c692b37a09a6?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80" class="card-img-top">
+				<div class="card-body text-center">
+					<h1 class="card-title">Better Luck Next Time! You didn't pass.</h1>
+					<p class="card-text"><strong>{{ record['score'] }} out of {{ record['items'] }}</strong> correct answers</p>
+					<p class="card-text">Started at <strong>{{ record['started'] }}</strong></p>
+					<p class="card-text">Finished at <strong>{{ record['finished'] }}</strong></p>
+					<a href="{{ constant('URLROOT') }}" class="btn btn-info">Back to Home</a>
+				</div>
+			</div>
+			{% endif %}
+		</div>
+	</section>
+{% endblock %}

@@ -1,6 +1,6 @@
-# PHP project template
+# PHP Online Exam Project
 
-A personal Full-stack PHP project template. Copied from and inspired by other PHP frameworks such as TraversyMVC, and Symfony. Uses Twig template engine. Personal use for now.
+Create your own online exams and take with this PHP application.
 
 ## todo 
 * proper documentation

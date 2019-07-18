@@ -49,7 +49,7 @@
 			if (is_null($type)) {
 				switch(true) {
 					case is_int($value):
-						$type = PDO::PARAM_INIT;
+						$type = PDO::PARAM_INT;
 						break;
 					case is_bool($value):
 						$type = PDO::PARAM_BOOL;
@@ -75,19 +75,24 @@
 		public function resultSet()
 		{
 			$this->execute();
-			return $this->stmt->fetchAll(PDO::FETCH_OBJ);
+			return $this->stmt->fetchAll(PDO::FETCH_ASSOC);
 		}
 
 		// Get single record as object
 		public function single()
 		{
 			$this->execute();
-			return $this->stmt->fetch(PDO::FETCH_OBJ);
+			return $this->stmt->fetch(PDO::FETCH_ASSOC);
 		}
 
 		// Get row count
 		public function rowCount()
 		{
 			return $this->stmt->rowCount();
+		}
+
+		public function getID()
+		{
+			return $this->dbh->lastInsertId();
 		}
 	}

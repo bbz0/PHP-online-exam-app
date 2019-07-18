@@ -1,0 +1,70 @@
+{% extends 'inc/base.html.twig' %}
+
+{% block title %}{{ title }} - Exam in Progress{% endblock %}
+
+{% block content %}
+	<section class="py-5">
+		<div class="container">
+
+			{% block msgs %}
+				{{ parent() }}
+			{% endblock %}
+
+			<h2 class="float-right">
+				<span class="count--h">00</span>:<span class="count--m">00</span>:<span class="count--s">00</span>
+			</h2>
+			<h1 class="exam--hours">{{ exam.hours }}</h1>
+			<h2 class="exam--minutes">{{ exam.minutes }}</h2>
+			<h2>{{ exam.name }}</h2>
+			<form class="exam" action="{{ constant('URLROOT') }}/exams/exam/{{ exam.ID }}" method="post">
+				<input type="hidden" name="recordID" value="{{ recordID }}">
+				{% for i in range(0, exam['sectionsCount'] - 1) %}
+				{% if exam['sections'][i]['questionsNum'] > 1 %}
+				<div class="card mb-3">
+					<h4 class="card-header">{{ exam['sections'][i]['name'] }}</h4>
+					<div class="card-body">
+						{% for x in range(0, exam['sections'][i]['questionsNum'] - 1) %}
+						<article class="mb-5">
+							<input type="hidden" name="questionID[{{i}}][{{x}}]" value="{{ exam['sections'][i]['questions'][x]['ID'] }}">
+							<p class="card-text">{{ exam['sections'][i]['questions'][x]['question'] }}</p>
+							<div class="form-check mb-3">
+								<input class="form-check-input" type="radio" name="choice[{{i}}][{{x}}]" value="A" id="choiceA[{{i}}][{{x}}]">
+								<label for="choiceA[{{i}}][{{x}}]" class="form-check-label"><strong>A. </strong>{{ exam['sections'][i]['questions'][x]['a'] }}</label>
+							</div>
+							<div class="form-check mb-3">
+								<input class="form-check-input" type="radio" name="choice[{{i}}][{{x}}]" value="B" id="choiceB[{{i}}][{{x}}]">
+								<label for="choiceB[{{i}}][{{x}}]" class="form-check-label"><strong>B. </strong>{{ exam['sections'][i]['questions'][x]['b'] }}</label>
+							</div>
+							{% if exam['sections'][i]['questions'][x]['c'] != 'N/A' %}
+							<div class="form-check mb-3">
+								<input class="form-check-input" type="radio" name="choice[{{i}}][{{x}}]" value="C" id="choiceC[{{i}}][{{x}}]">
+								<label for="choiceC[{{i}}][{{x}}]" class="form-check-label"><strong>C. </strong>{{ exam['sections'][i]['questions'][x]['c'] }}</label>
+							</div>
+							{% endif %}
+							{% if exam['sections'][i]['questions'][x]['d'] != 'N/A' %}
+							<div class="form-check mb-3">
+								<input class="form-check-input" type="radio" name="choice[{{i}}][{{x}}]" value="D" id="choiceD[{{i}}][{{x}}]">
+								<label for="choiceD[{{i}}][{{x}}]" class="form-check-label"><strong>D. </strong>{{ exam['sections'][i]['questions'][x]['d'] }}</label>
+							</div>
+							{% endif %}
+							{% if exam['sections'][i]['questions'][x]['e'] != 'N/A' %}
+							<div class="form-check mb-3">
+								<input class="form-check-input" type="radio" name="choice[{{i}}][{{x}}]" value="E" id="choiceE[{{i}}][{{x}}]">
+								<label for="choiceE[{{i}}][{{x}}]" class="form-check-label"><strong>E. </strong>{{ exam['sections'][i]['questions'][x]['e'] }}</label>
+							</div>
+							{% endif %}
+						</article>
+						{% endfor %}
+					</div>
+				</div>
+				{% endif %}
+				{% endfor %}
+				<input type="submit" class="btn btn-success btn-lg submit--exam" name="finishExam" value="Submit">
+			</form>
+		</div>
+	</section>
+{% endblock %}
+
+{% block javascript %}
+	<script type="text/javascript" src="{{ constant('URLROOT') }}/js/exam.js"></script>
+{% endblock %}

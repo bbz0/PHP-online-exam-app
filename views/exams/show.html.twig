@@ -1,0 +1,61 @@
+{% extends 'inc/base.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+	<section class="py-5">
+		<div class="container">
+
+			{% block msgs %}
+				{{ parent() }}
+			{% endblock %}
+
+			<h1>{{ exam.name }}</h1>
+			<small class="d-block my-2">
+				<span class="mr-4">made by {{ exam.examinerName }}</span>
+				<span class="mr-4">{{ exam.hours }}hr {{ exam.minutes }}m</span>
+				<span class="mr-4">{{ exam.sectionsCount }} sections</span>
+				<span class="mr-4">{{ exam.questionsNum }} questions</span>
+				<span class="mr-4">{{ exam.passingRate }}% passing rate</span>
+			</small>
+			<p>{{ exam.descr }}</p>
+			{% if examinee %}
+				{% if exam.accessType == 'open' %}
+					<div class="alert alert-primary">
+						<strong>Note:</strong> Make sure you're prepared before taking the exam. Once you start, a count down will begin. When time's up your test will be automatically submitted and evaluated. Be careful when trying to leave the exam page after you start, if you leave your test will still be submitted and recorded as "incomplete". After answering all questions click "submit", Good luck.
+					</div>
+					<form action="{{ constant('URLROOT') }}/exams/exam/{{ exam.ID }}" method="post">
+						<input type="submit" class="btn btn-info" name="startExam" value="Begin Exam">
+					</form>
+				{% elseif exam.accessType == 'approved' %}
+					{% if examinee.request.approved == true %}
+						<p>Your request has been approved you may take the exam.</p>
+						<div class="alert alert-primary">
+							<strong>Note:</strong> Make sure you're prepared before taking the exam. Once you start, a count down will begin. When time's up your test will be automatically submitted and evaluated. Be careful when trying to leave the exam page after you start, if you leave your test will still be submitted and recorded as "incomplete". After answering all questions click "submit", Good luck.
+						</div>
+						<form action="{{ constant('URLROOT') }}/exams/exam/{{ exam.ID }}" method="post">
+							<input type="submit" class="btn btn-info" name="startExam" value="Begin Exam">
+						</form>
+					{% else %}
+						{% if examinee.request.isSent == true %}
+							<p>Request is sent. Awaiting approval from examiner.</p>
+						{% else %}
+							<p>You are not yet approved by the examiner to take this exam, send a request.</p>
+							<form action="{{ constant('URLROOT') }}/exams/exam/{{ exam.ID }}" method="post">
+								<input type="submit" name="requestAccess" value="Send Request to Examiner" class="btn btn-primary">
+							</form>
+						{% endif %}
+					{% endif %}
+				{% elseif exam.accessType == 'inviteOnly' %}
+					<p>You have been invited to take this exam.</p>
+					<div class="alert alert-primary">
+						<strong>Note:</strong> Make sure you're prepared before taking the exam. Once you start, a count down will begin. When time's up your test will be automatically submitted and evaluated. Be careful when trying to leave the exam page after you start, if you leave your test will still be submitted and recorded as "incomplete". After answering all questions click "submit", Good luck.
+					</div>
+					<form action="{{ constant('URLROOT') }}/exams/exam/{{ exam.ID }}" method="post">
+						<input type="submit" name="startExam" value="Begin Exam" class="btn btn-info">
+					</form>
+				{% endif %}
+			{% endif %}
+		</div>
+	</section>
+{% endblock %}

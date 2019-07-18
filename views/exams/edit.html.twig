@@ -1,0 +1,204 @@
+{% extends 'inc/base.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+	<section class="py-5">
+		<div class="container">
+
+			{% block msgs %}
+				{{ parent() }}
+			{% endblock %}
+
+			<div class="row">
+				<div class="col-md-10 mx-auto">
+					<h1>Edit {{ examData.name }}</h1>
+					<a href="{{ constant('URLROOT') }}" class="btn btn-secondary btn-sm">Back</a>
+					<form action="{{ constant('URLROOT') }}/exams/edit/{{ examData.ID }}" method="post" onsubmit="return editExam.saveSettings()" id="mainSettings">
+						<div class="card mt-4 mb-4">
+							<div class="card-header">
+								Exam Details
+							</div>
+							<div class="card-body">
+								<div class="form-group">
+									<label for="name">Exam Name: <sup>*</sup></label>
+									<input class="form-control input--name {% if examData.name.error %}is-invalid{% endif %}" type="text" name="name" id="name" value="{{ examData.name }}" maxlength="50">
+									<span class="invalid-feedback">{{ examData.name.error }}</span>
+								</div>
+								<div class="form-group">
+									<label for="descr">Description:</label>
+									<textarea class="form-control input--desc {% if examData.descr.error %}is-invalid{% endif %}" name="desc" id="descr" maxlength="255">{{ examData.descr }}</textarea>
+									<span class="invalid-feedback">{{ examData.descr.error }}</span>
+								</div>
+								<div class="form-group">
+									<label for="time">Time Limit: <sup>*</sup></label>
+									<div class="row">
+										<div class="col-md-6">
+											<label for="hours"><small>Hours</small></label>
+											<select class="form-control" name="hours" id="hours">
+												{% for i in range(00, 24) %}
+												<option value="{{ i }}" {% if i == examData.hours %}selected{% endif %}>
+													{% if i < 10 %}0{{ i }}{% else %}{{ i }}{% endif %}
+												</option>
+												{% endfor %}
+											</select>
+										</div>
+										<div class="col-md-6">
+											<label for="mins"><small>Minutes</small></label>
+											<select class="form-control" name="mins" id="mins">
+												{% for i in range(01, 59) %}
+												<option value="{{ i }}" {% if i == examData.minutes %}selected{% endif %}>
+													{% if i < 10 %}0{{ i }}{% else %}{{ i }}{% endif %}
+												</option>
+												{% endfor %}
+											</select>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="passingRate">Passing Rate: <sup>*</sup></label>
+									<select class="form-control" name="passingRate" id="passingRate">
+										{% for i in range(low=50, high=100, step=5) %}
+										<option value="{{ i }}" {% if i == examData.passingRate %}selected{% endif %}>{{ i }} %</option>
+										{% endfor %}
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="card mb-4">
+							<div class="card-header">
+								Edit Sections
+							</div>
+							<div class="card-body">
+								{% if examData.sectionsCount > 0 %}
+								<table class="table">
+									<thead>
+										<tr>
+											<th>Name</th>
+											<th># of Questions</th>
+											<th>Edit</th>
+											<th>Remove</th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for i in range(0, examData.sectionsCount - 1) %}
+										<tr>
+											<td>
+												<input type="hidden" name="sectionID[{{i}}]" value="{{ examData['sections'][i]['ID'] }}">
+												<input class="form-control input--section" type="text" name="sectionEdit[{{i}}]" value="{{ examData['sections'][i]['name'] }}" maxlength="50">
+												<span class="invalid-feedback"></span>
+											</td>
+											<td>{{ examData['sections'][i]['questionsNum'] }}</td>
+											<td><a href="{{ constant('URLROOT') }}/exams/edit/{{ examData.ID }}/{{ examData['sections'][i]['name'] }}" class="btn btn-info btn-sm">Edit Questions</a></td>
+											<td><a href="{{ constant('URLROOT') }}/exams/delete/{{ examData.ID }}/{{ examData['sections'][i]['name'] }}" class="btn btn-danger btn-sm">Delete Section</a></td>
+										</tr>
+										{% endfor %}
+									</tbody>
+								</table>
+								{% else %}
+									<p>There are no sections.</p>
+								{% endif %}
+							</div>
+						</div>
+						<div class="card mb-4">
+							<div class="card-header">
+								Add Sections
+							</div>
+							<div class="card-body">
+								<div class="section--container">
+								</div>
+								<button type="button" class="btn btn-success add--section">Add Section</button>
+							</div>
+						</div>
+						</form>
+						{% if examData.accessType == 'approved' %}
+						<div class="card mb-4">
+							<div class="card-header">
+								Requests
+							</div>
+							<div class="card-body">
+								{% if examData.requests %}
+								<table class="table">
+									<thead>
+										<tr>
+											<th>ID</th>
+											<th>Username</th>
+											<th>First Name</th>
+											<th>Last Name</th>
+											<th>Request</th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for request in examData.requests %}
+										<tr>
+											<td>{{ request.examineeID }}</td>
+											<td>{{ request.examineeName }}</td>
+											<td>{{ request.examineeFName }}</td>
+											<td>{{ request.examineeLName }}</td>
+											<td>
+												<form action="{{ constant('URLROOT') }}/exams/edit/{{ examData.ID }}" method="post">
+													<input type="hidden" name="requestID" value="{{ request.ID }}">
+													<input type="submit" name="approveRequest" class="btn btn-success btn-sm" value="Approve">
+												</form>
+											</td>
+										</tr>
+										{% endfor %}
+									</tbody>
+								</table>
+								{% else %}
+									<p>There are no requests at the moment.</p>
+								{% endif %}
+							</div>
+						</div>
+						{% elseif examData.accessType == 'inviteOnly' %}
+						<div class="card mb-4">
+							<div class="card-header">
+								Invited Examinees
+							</div>
+							<div class="card-body">
+								{% if examData.invited %}
+								<table class="table mt-4">
+									<thead>
+										<tr>
+											<th>ID</th>
+											<th>Username</th>
+											<th>First Name</th>
+											<th>Last Name</th>
+											<th>Invitation</th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for invite in examData.invited %}
+										<tr>
+											<td>{{ invite.examineeID }}</td>
+											<td>{{ invite.username }}</td>
+											<td>{{ invite.firstName }}</td>
+											<td>{{ invite.lastName }}</td>
+											<td>
+												<form action="{{ constant('URLROOT') }}/exams/edit/{{ examData.ID }}/invite" method="post">
+													<input type="hidden" name="inviteID" value="{{ invite.ID }}">
+													<input type="submit" name="deleteInvite" class="btn btn-danger btn-sm" value="Cancel Invitation">
+												</form>
+											</td>
+										</tr>
+										{% endfor %}
+									</tbody>
+								</table>
+								{% else %}
+									<p>There are no invited examinees yet</p>
+								{% endif %}
+								<a href="{{ constant('URLROOT') }}/exams/edit/{{ examData.ID }}/invite" class="btn btn-info">Invite Examinees</a>
+							</div>
+						</div>
+						{% endif %}
+					<input type="submit" name="submit" class="btn btn-info save--btn" value="Save" form="mainSettings">
+					<a href="{{ constant('URLROOT') }}/exams/delete/{{ examData.ID }}" class="btn btn-danger">Delete Exam</a>
+				</div>
+			</div>
+		</div>
+	</section>
+{% endblock %}
+
+{% block javascript %}
+	<script type="text/javascript" src="{{ constant('URLROOT') }}/js/editExam.js"></script>
+{% endblock %}

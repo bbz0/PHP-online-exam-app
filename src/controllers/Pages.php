@@ -7,6 +7,12 @@
 				'test' => 'Hello World'
 			];
 
-			echo $this->twig->render('index.html.twig', $data);
+			if (isLoggedIn('examiner')) {
+				redirect('examiners/dashboard');
+			} elseif (isLoggedIn('examinee')) {
+				redirect('examinees/dashboard');
+			} else {
+				echo $this->twig->render('index.html.twig', $data);
+			}
 		}
 	}

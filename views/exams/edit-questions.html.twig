@@ -1,0 +1,174 @@
+{% extends 'inc/base.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+	<section class="py-5">
+		<div class="container">
+
+			{% block msgs %}
+				{{ parent() }}
+			{% endblock %}
+
+			<div class="row">
+				<div class="col-md-10 mx-auto">
+					<h1>{{ title }}</h1>
+					<a href="{{ constant('URLROOT') }}/exams/edit/{{ examData.ID }}" class="btn btn-secondary btn-sm">Back</a>
+					<form action="{{ constant('URLROOT') }}/exams/edit/{{ examData.ID }}/{{ currSection }}" method="post" onsubmit="return editSection.save()">
+						<div class="card mt-4 mb-4">
+							<div class="card-header">
+								{{ currSection }} Questions
+							</div>
+							<div class="card-body">
+								<div class="questions--container">
+									{% if loadedQuestions %}
+									{% for i in range(0, questionsCount - 1) %}
+									<div class="question mb-5" id="{{ i }}">
+										<div class="form-group">
+
+											{% if loadedQuestions[i]['ID'] %}
+											<a href="{{ constant('URLROOT') }}/exams/delete/{{ examData.ID }}/{{ currSection }}/{{ loadedQuestions[i]['ID'] }}" class="btn btn-danger btn-sm float-right my-1">Remove</a>
+											<input type="hidden" name="updateID[{{i}}]" value="{{ loadedQuestions[i]['ID'] }}">
+											{% else %}
+											<button type="button" class="btn btn-danger btn-sm float-right mb-2 remove--question">Remove</button>
+											{% endif %}
+
+											<label for="question[{{i}}]">Question</label>
+											<textarea class="form-control input--question {% if loadedQuestions[i]['question']['error'] %}is-invalid{% endif %}" name="updateQuestion[{{i}}]" id="question[{{i}}]">{{ loadedQuestions[i]['question'] }}</textarea>
+											<span class="invalid-feedback">{{ error['loadedQuestions'][i]['question'] }}</span>
+
+										</div>
+										<div class="choices--container">
+											
+											<div class="input-group mt-3">
+												<div class="input-group-prepend">
+													<div class="input-group-text">
+														<div class="form-check">
+															<input class="form-check-input" type="radio" id="correctAnswerA[{{i}}]" name="updateCorrectAnswer[{{i}}]" value="A" {% if loadedQuestions[i]['correctAnswer'] == 'A' %}checked{% endif %}>
+															<label class="form-check-label" for="correctAnswerA[{{i}}]">A</label>
+														</div>
+													</div>
+												</div>
+												<input type="text" class="form-control input--choiceA {% if error['loadedQuestions'][i]['A'] %}is-invalid{% endif %}" name="updateChoiceA[{{i}}]" id="choiceA[{{i}}]" value="{{ loadedQuestions[i]['a'] }}">
+											</div>
+											<div class="input-group mt-3">
+												<div class="input-group-prepend">
+													<div class="input-group-text">
+														<div class="form-check">
+															<input class="form-check-input" type="radio" id="correctAnswerB[{{i}}]" name="updateCorrectAnswer[{{i}}]" value="B" {% if loadedQuestions[i]['correctAnswer'] == 'B' %}checked{% endif %}>
+															<label class="form-check-label" for="correctAnswerB[{{i}}]">B</label>
+														</div>
+													</div>
+												</div>
+												<input type="text" class="form-control input--choiceB {% if error['loadedQuestions'][i]['B'] %}is-invalid{% endif %}" name="updateChoiceB[{{i}}]" id="choiceB[{{i}}]" value="{{ loadedQuestions[i]['b'] }}">
+											</div>
+											{% if loadedQuestions[i]['c'] != 'N/A' %}
+											<div class="input-group mt-3">
+												<div class="input-group-prepend">
+													<div class="input-group-text">
+														<div class="form-check">
+															<input class="form-check-input" type="radio" id="correctAnswerC[{{i}}]" name="updateCorrectAnswer[{{i}}]" value="C" {% if loadedQuestions[i]['correctAnswer'] == 'C' %}checked{% endif %}>
+															<label class="form-check-label" for="correctAnswerC[{{i}}]">C</label>
+														</div>
+													</div>
+												</div>
+												<input type="text" class="form-control input--choiceC {% if error['loadedQuestions'][i]['C'] %}is-invalid{% endif %}" name="updateChoiceC[{{i}}]" id="choiceC[{{i}}]" value="{{ loadedQuestions[i]['c'] }}">
+												{% if loadedQuestions[i]['d'] == 'N/A' %}
+												<div class="input-group-append">
+													<button class="btn btn-danger btn-sm remove--choice">Remove</button>
+												</div>
+												{% endif %}
+											</div>
+											{% if loadedQuestions[i]['d'] != 'N/A' %}
+											<div class="input-group mt-3">
+												<div class="input-group-prepend">
+													<div class="input-group-text">
+														<div class="form-check">
+															<input class="form-check-input" type="radio" id="correctAnswerD[{{i}}]" name="updateCorrectAnswer[{{i}}]" value="D" {% if loadedQuestions[i]['correctAnswer'] == 'D' %}checked{% endif %}>
+															<label class="form-check-label" for="correctAnswerD[{{i}}]">D</label>
+														</div>
+													</div>
+												</div>
+												<input type="text" class="form-control input--choiceD {% if error['loadedQuestions'][i]['D'] %}is-invalid{% endif %}" name="updateChoiceD[{{i}}]" id="choiceD[{{i}}]" value="{{ loadedQuestions[i]['d'] }}">
+												{% if loadedQuestions[i]['e'] == 'N/A' %}
+												<div class="input-group-append">
+													<button class="btn btn-danger btn-sm remove--choice">Remove</button>
+												</div>
+												{% endif %}
+											</div>
+											{% if loadedQuestions[i]['e'] != 'N/A' %}
+											<div class="input-group mt-3">
+												<div class="input-group-prepend">
+													<div class="input-group-text">
+														<div class="form-check">
+															<input class="form-check-input" type="radio" id="correctAnswerE[{{i}}]" name="updateCorrectAnswer[{{i}}]" value="E" {% if loadedQuestions[i]['correctAnswer'] == 'E' %}checked{% endif %}>
+															<label class="form-check-label" for="correctAnswerE[{{i}}]">E</label>
+														</div>
+													</div>
+												</div>
+												<input type="text" class="form-control input--choiceE {% if error['loadedQuestions'][i]['E'] %}is-invalid{% endif %}" name="updateChoiceE[{{i}}]" id="choiceE[{{i}}]" value="{{ loadedQuestions[i]['e'] }}">
+												<div class="input-group-append">
+													<button class="btn btn-danger btn-sm remove--choice">Remove</button>
+												</div>
+											</div>
+											{% endif %}
+											{% endif %}
+											{% endif %}
+
+										</div>
+										<button type="button" class="btn btn-success btn-sm mt-3 add--update--choice">Add Choice</button>
+									</div>
+									{% endfor %}
+									{% else %}
+									<div class="question mb-5" id="0">
+										<div class="form-group">
+											<button type="button" class="btn btn-danger btn-sm float-right mb-2 remove--question">Remove</button>
+											<label for="question[0]">Question</label>
+											<textarea class="form-control input--question" name="question[0]" id="question[0]" maxlength="255"></textarea>
+											<span class="invalid-feedback"></span>
+										</div>
+										<div class="choices--container">
+											
+											<div class="input-group mt-3">
+												<div class="input-group-prepend">
+													<div class="input-group-text">
+														<div class="form-check">
+															<input class="form-check-input" type="radio" id="correctAnswerA[0]" name="correctAnswer[0]" value="A" checked>
+															<label class="form-check-label" for="correctAnswerA[0]">A</label>
+														</div>
+													</div>
+												</div>
+												<input type="text" class="form-control input--choiceA" name="choiceA[0]" id="choice[A]" maxlength="255">
+											</div>
+											<div class="input-group mt-3">
+												<div class="input-group-prepend">
+													<div class="input-group-text">
+														<div class="form-check">
+															<input class="form-check-input" type="radio" id="correctAnswerB[0]" name="correctAnswer[0]" value="B">
+															<label class="form-check-label" for="correctAnswerB[0]">B</label>
+														</div>
+													</div>
+												</div>
+												<input type="text" class="form-control input--choiceB" name="choiceB[0]" id="choiceB[0]" maxlength="255">
+											</div>
+
+										</div>
+										<button type="button" class="btn btn-success btn-sm mt-3 add--choice">Add Choice</button>
+									</div>
+									{% endif %}
+								</div>
+								<hr class="bg-secondary">
+								<button class="btn btn-success add--question" type="button">Add Question</button>
+							</div>
+						</div>
+						<input type="submit" name="submit" class="btn btn-info btn-lg save--questions" value="Save">
+					</form>
+				</div>
+			</div>
+		</div>
+	</section>
+{% endblock %}
+
+{% block javascript %}
+	<script type="text/javascript" src="{{ constant('URLROOT') }}/js/editSection.js"></script>
+{% endblock %}
