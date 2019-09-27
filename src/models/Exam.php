@@ -1,13 +1,17 @@
 <?php
+	// the exam db model
 	class Exam
 	{
 		private $db;
 
 		public function __construct()
 		{
+			// instantiate database class
 			$this->db = new Database;
 		}
 
+		// CREATE METHODS
+		// create exam method
 		public function createExam($data, $id)
 		{
 			$this->db->query('INSERT INTO exams(name, descr, accessType, hours, minutes, totalTime, passingRate, creatorID) VALUES (:name, :descr, :accessType, :hours, :minutes, :totalTime, :passingRate, :creatorID)');
@@ -20,12 +24,15 @@
 			$this->db->bind(':passingRate', $data['passingRate']);
 			$this->db->bind(':creatorID', $id);
 			$this->db->execute();
+			// get id of created exam
 			$examID = $this->db->getID();
 
+			// increment number of exams examiner created in database
 			$this->db->query('UPDATE examiners SET exams = exams + 1 WHERE ID = :ID');
 			$this->db->bind(':ID', $id);
 			$examinerUpdated = $this->db->execute();
 
+			// whether successful or not
 			if ($examID && $examinerUpdated) {
 				return $examID;
 			} else {
@@ -33,6 +40,7 @@
 			}
 		}
 
+		// create section method
 		public function createSections($data, $id)
 		{
 			$errorCounter = 0;
@@ -58,6 +66,7 @@
 			}
 		}
 
+		// create questions method, takes in an array of questions, loops through, and stores each into the database
 		public function storeQuestions($data, $section, $examID)
 		{
 			$errorCounter = 0;
@@ -75,14 +84,14 @@
 				if (!$this->db->execute()) {
 					$errorCounter++;
 				}
-
+				// increment number of questions in exam table
 				$this->db->query('UPDATE sections SET questionsNum = questionsNum + 1 WHERE name = :name AND examID = :examID');
 				$this->db->bind(':name', $section);
 				$this->db->bind(':examID', $examID);
 				if (!$this->db->execute()) {
 					$errorCounter++;
 				}
-
+				// increment number of questions in section table
 				$this->db->query('UPDATE exams SET questionsNum = questionsNum + 1 WHERE ID = :ID');
 				$this->db->bind(':ID', $examID);
 				if (!$this->db->execute()) {
@@ -101,6 +110,7 @@
 			}
 		}
 
+		// create exam record method when examinee takes an exam
 		public function createRecord($examID, $examineeID, $items)
 		{
 			$this->db->query('INSERT INTO examRecords(examID, examineeID, items) VALUES(:examID, :examineeID, :items)');
@@ -110,6 +120,7 @@
 			$this->db->execute();
 			$recordId = $this->db->getID();
 
+			// increment exams taken on examinee table
 			$this->db->query('UPDATE examinees SET examsTaken = examsTaken + 1 WHERE ID = :ID');
 			$this->db->bind(':ID', $examineeID);
 			$examineeUpdated = $this->db->execute();
@@ -121,6 +132,7 @@
 			}
 		}
 
+		// create request method, create request when examinee sends a permission request on permission type exams
 		public function createRequest($examineeID, $examID, $examinerID)
 		{
 			$this->db->query('INSERT INTO requests(examineeID, examID, examinerID, isSent) VALUES(:examineeID, :examID, :examinerID, TRUE)');
@@ -134,6 +146,7 @@
 			}
 		}
 
+		// create invite method, creates invitations when examiner invites examinees to take invitation type exams
 		public function createInvite($examID, $examinerID, $examineeID)
 		{
 			$this->db->query('INSERT INTO invitations(examID, examinerID, examineeID) VALUES(:examID, :examinerID, :examineeID)');
@@ -147,6 +160,8 @@
 			}
 		}
 
+		// GET METHODS
+		// get all exams stored in db
 		public function getAllExams()
 		{
 			$this->db->query('SELECT exams.ID, name, descr, accessType, hours, minutes, questionsNum, passingRate,
@@ -160,6 +175,7 @@
 			return $exams;
 		}
 
+		// get invitation only exams that the logged in examinee is invited
 		public function getInviteExam($id)
 		{
 			$this->db->query('SELECT exams.ID, name, descr, accessType, hours, minutes, questionsNum,
@@ -174,6 +190,7 @@
 			return $exam;
 		}
 
+		// get all exams the logged in examiner has created
 		public function getExaminerExams($id)
 		{
 			$this->db->query('SELECT * FROM exams WHERE creatorID = :creatorID');
@@ -183,6 +200,7 @@
 			return $exams;
 		}
 
+		// get all single exam data
 		public function getExam($id)
 		{
 			$this->db->query('SELECT exams.ID, name, descr, accessType, hours, minutes, totalTime, sectionsCount, passingScore, passingRate, questionsNum, creatorID, examiners.username as examinerName
@@ -195,6 +213,7 @@
 			return $row;
 		}
 
+		// get all sections in an exam
 		public function getSections($id)
 		{
 			$this->db->query('SELECT ID, name, questionsNum FROM sections WHERE examID = :examID');
@@ -204,6 +223,7 @@
 			return $sections;
 		}
 
+		// get all questions in a section in an exam
 		public function getQuestions($section, $id)
 		{
 			$this->db->query('SELECT * FROM questions WHERE section = :section AND examID = :examID');
@@ -214,6 +234,7 @@
 			return $questions;
 		}
 
+		// get single question
 		public function getQuestion($id)
 		{
 			$this->db->query('SELECT * FROM questions WHERE ID = :ID');
@@ -223,6 +244,7 @@
 			return $question;
 		}
 
+		// get examinee exam record
 		public function getRecord($examId, $examineeId, $id)
 		{
 			$this->db->query('SELECT score, items, result, started, finished, 
@@ -240,6 +262,7 @@
 			return $record;
 		}
 
+		// get all examinee requests on a permission type exam
 		public function getExamRequests($examinerID, $examID)
 		{
 			$this->db->query('SELECT requests.ID, examineeID, examinees.username as examineeName, examinees.firstName as examineeFName, examinees.lastName as examineeLName
@@ -253,6 +276,7 @@
 			return $requests;
 		}
 
+		// get single request sent by examinee
 		public function getRequest($examineeId, $examId)
 		{
 			$this->db->query('SELECT approved, isSent FROM requests WHERE examineeID = :examineeID AND examID = :examID');
@@ -263,6 +287,7 @@
 			return $request;
 		}
 
+		// get all invited examinees in an exam
 		public function getInvitedExaminee($examID)
 		{
 			$this->db->query('SELECT examinees.ID as examineeID, examinees.username, examinees.firstName, examinees.lastName, invitations.ID as ID
@@ -274,6 +299,7 @@
 			return $invited;
 		}
 
+		// get all uninvited examinees in an exam
 		public function getUninviteExaminee($examID)
 		{
 			$this->db->query('SELECT examinees.ID, examinees.username, examinees.firstName, examinees.lastName 
@@ -284,6 +310,7 @@
 			return $examinees;
 		}
 
+		// get all exams where examinee is invited to take
 		public function getInvitations($examineeID)
 		{
 			$this->db->query('SELECT examID FROM invitations WHERE examineeID = :examineeID');
@@ -311,6 +338,7 @@
 			}
 		}
 
+		// check if examinee is invited in exam
 		public function checkInvitation($examineeID, $examID)
 		{
 			$this->db->query('SELECT examineeID, examID FROM invitations WHERE examineeID = :examineeID AND examID = :examID');
@@ -325,6 +353,8 @@
 			}
 		}
 
+		// UPDATE METHODS
+		// updates exam details in db
 		public function updateExam($data, $id)
 		{
 			$this->db->query('UPDATE exams SET name = :name, descr = :descr, hours = :hours, minutes = :minutes, totalTime = :totalTime, passingRate = :passingRate WHERE ID = :ID');
@@ -345,6 +375,7 @@
 			}
 		}
 
+		// update section settings in an exam
 		public function updateSections($data, $sectionId, $examId)
 		{
 			$errorCount = 0;
@@ -366,6 +397,7 @@
 			}
 		}
 
+		// update questions, takes in an array of questions, loops through them then updates
 		public function updateQuestions($data)
 		{
 			$errorCounter = 0;
@@ -391,6 +423,7 @@
 			}
 		}
 
+		// when examinee finishes exam, record the results to db
 		public function recordExam($score, $result, $ID, $examineeID)
 		{
 			$this->db->query('UPDATE examRecords SET score = :score, result = :result, finished = CURRENT_TIMESTAMP WHERE ID = :ID');
@@ -415,6 +448,7 @@
 			}
 		}
 
+		// approve a permission request on permission type exam
 		public function approveRequest($id)
 		{
 			$this->db->query('UPDATE requests SET approved = TRUE WHERE ID = :ID');
@@ -427,6 +461,8 @@
 			}
 		}
 
+		// DELETE METHODS
+		// delete exam, delete all invitations, requests, and questions associated with the exam
 		public function deleteExam($id)
 		{
 			$this->db->query('DELETE FROM invitations WHERE examID = :examID');
@@ -456,6 +492,7 @@
 			}
 		}
 
+		// delete section, also deletes all questions associated with the section
 		public function deleteSection($section, $id)
 		{
 			$this->db->query('DELETE FROM questions WHERE section = :section AND examID = :examID');
@@ -487,6 +524,7 @@
 			}
 		}
 
+		// delete question
 		public function deleteQuestion($id, $section, $questionID)
 		{
 			$this->db->query('DELETE FROM questions WHERE ID = :ID');
@@ -511,6 +549,7 @@
 			}
 		}
 
+		// delete invitation
 		public function uninviteExaminee($id)
 		{
 			$this->db->query('DELETE FROM invitations WHERE ID = :ID');
@@ -523,6 +562,7 @@
 			}
 		}
 
+		// calculate exam passing score, is called when the number of questions on an exam change
 		public function calcPassing($id)
 		{
 			$this->db->query('UPDATE exams SET passingScore = ceil((passingRate / 100) * questionsNum) WHERE ID = :ID');

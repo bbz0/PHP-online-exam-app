@@ -1,4 +1,5 @@
 <?php
+	// examiner db model
 	class Examiner
 	{
 		private $db;
@@ -8,6 +9,7 @@
 			$this->db = new Database;
 		}
 
+		// save user data
 		public function register($data)
 		{
 			$data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
@@ -25,6 +27,7 @@
 			}
 		}
 
+		// authenticate user
 		public function login($username, $password)
 		{
 			$this->db->query('SELECT * FROM examiners WHERE username = :username');
@@ -39,6 +42,7 @@
 			}
 		}
 
+		// check if username exists
 		public function checkUsername($username)
 		{
 			$this->db->query('SELECT * FROM examiners WHERE username = :username');
@@ -53,6 +57,7 @@
 			}	
 		}
 
+		// unused method
 		public function getRequests($id)
 		{
 			$this->db->query('SELECT requests.ID, examID, examineeID, 
@@ -70,6 +75,7 @@
 			return $requests;
 		}
 
+		// unused method
 		public function approveRequest($id)
 		{
 			$this->db->query('UPDATE requests SET approved = TRUE WHERE ID = :ID');

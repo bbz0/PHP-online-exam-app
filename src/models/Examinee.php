@@ -1,4 +1,5 @@
 <?php
+	// examinee db model
 	class Examinee
 	{
 		private $db;
@@ -8,6 +9,7 @@
 			$this->db = new Database;
 		}
 
+		// save user data to db
 		public function register($data)
 		{
 			$data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
@@ -25,6 +27,7 @@
 			}
 		}
 
+		// authenticates user
 		public function login($username, $password)
 		{
 			$this->db->query('SELECT * FROM examinees WHERE username = :username');
@@ -39,6 +42,7 @@
 			}
 		}
 
+		// check if username exists in db
 		public function checkUsername($username)
 		{
 			$this->db->query('SELECT * FROM examinees WHERE username = :username');
@@ -53,6 +57,7 @@
 			}	
 		}
 
+		// get user 'stats'
 		public function getStats($id)
 		{
 			$this->db->query('SELECT examsTaken, examsPassed, examsFailed, totalScore FROM examinees WHERE ID = :ID');
@@ -62,6 +67,7 @@
 			return $stats;
 		}
 
+		// get all records of exams user has taken
 		public function getRecords($id)
 		{
 			$this->db->query('SELECT exams.name as examName, score, items, result, started, finished 

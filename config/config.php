@@ -1,7 +1,9 @@
 <?php
+	// use phpdotenv library to load envs
 	$dotenv = Dotenv\Dotenv::create(dirname(__DIR__));
 	$dotenv->load();
 
+	// define constants
 	define('DB_HOST', getenv('DB_HOST'));
 	define('DB_USER', getenv('DB_USER'));
 	define('DB_PASSWORD', getenv('DB_PASSWORD'));

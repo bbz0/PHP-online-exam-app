@@ -1,4 +1,5 @@
 <?php
+	// controller class for static pages
 	class Pages extends Controller
 	{
 		public function index()
@@ -7,6 +8,7 @@
 				'test' => 'Hello World'
 			];
 
+			// if there are users logged in redirect to their respective dashboards
 			if (isLoggedIn('examiner')) {
 				redirect('examiners/dashboard');
 			} elseif (isLoggedIn('examinee')) {
